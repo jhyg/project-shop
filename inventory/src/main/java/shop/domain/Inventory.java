@@ -11,6 +11,7 @@ import shop.domain.InventoryUpdated;
 @Entity
 @Table(name = "Inventory_table")
 @Data
+//<<< DDD / Aggregate Root
 public class Inventory {
 
     @Id
@@ -32,20 +33,33 @@ public class Inventory {
         return inventoryRepository;
     }
 
+    //<<< Clean Arch / Port Method
     public static void orderPlaced(OrderPlaced orderPlaced) {
-        repository()
-            .findById(orderPlaced.getProductId())
-            .ifPresent(inventory -> {
-                Long newStockRemain =
-                    inventory.getStockRemain() - orderPlaced.getQty();
-                if (newStockRemain < 0) newStockRemain = 0L;
-                inventory.setStockRemain(newStockRemain);
-                repository().save(inventory);
+        //implement business logic here:
 
-                InventoryUpdated inventoryUpdated = new InventoryUpdated(
-                    inventory
-                );
-                inventoryUpdated.publishAfterCommit();
-            });
+        /** Example 1:  new item 
+        Inventory inventory = new Inventory();
+        repository().save(inventory);
+
+        InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
+        inventoryUpdated.publishAfterCommit();
+        */
+
+        /** Example 2:  finding and process
+        
+        repository().findById(orderPlaced.get???()).ifPresent(inventory->{
+            
+            inventory // do something
+            repository().save(inventory);
+
+            InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
+            inventoryUpdated.publishAfterCommit();
+
+         });
+        */
+
     }
+    //>>> Clean Arch / Port Method
+
 }
+//>>> DDD / Aggregate Root

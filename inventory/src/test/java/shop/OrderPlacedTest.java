@@ -95,8 +95,8 @@ public class OrderPlacedTest {
 
             LOGGER.info("Response received: {}", received.getPayload());
 
-            assertEquals(outputEvent.getProductId(), 1L);
-            assertEquals(outputEvent.getStockRemain(), 5L);
+            assertEquals(outputEvent.getProductId(), Long.valueOf(1));
+            assertEquals(outputEvent.getStockRemain(), Long.valueOf(5));
         } catch (JsonProcessingException e) {
             // TODO Auto-generated catch block
             assertTrue("exception", false);
@@ -109,8 +109,8 @@ public class OrderPlacedTest {
         //given:
         Inventory entity = new Inventory();
 
-        entity.setProductId("2");
-        entity.setStockRemain("10");
+        entity.setProductId(2L);
+        entity.setStockRemain(10L);
 
         repository.save(entity);
 
@@ -118,8 +118,8 @@ public class OrderPlacedTest {
 
         OrderPlaced event = new OrderPlaced();
 
-        event.setProductId("4");
-        event.setQty("2");
+        event.setProductId(4L);
+        event.setQty(2L);
 
         InventoryApplication.applicationContext = applicationContext;
 
@@ -155,8 +155,8 @@ public class OrderPlacedTest {
 
             LOGGER.info("Response received: {}", received.getPayload());
 
-            assertEquals(outputEvent.getProductId(), "2");
-            assertEquals(outputEvent.getStockRemain(), "6");
+            assertEquals(outputEvent.getProductId(), Long.valueOf(2));
+            assertEquals(outputEvent.getStockRemain(), Long.valueOf(6));
         } catch (JsonProcessingException e) {
             // TODO Auto-generated catch block
             assertTrue("exception", false);
@@ -169,8 +169,8 @@ public class OrderPlacedTest {
         //given:
         Inventory entity = new Inventory();
 
-        entity.setProductId("3");
-        entity.setStockRemain("10");
+        entity.setProductId(3L);
+        entity.setStockRemain(10L);
 
         repository.save(entity);
 
@@ -178,8 +178,8 @@ public class OrderPlacedTest {
 
         OrderPlaced event = new OrderPlaced();
 
-        event.setProductId("3");
-        event.setQty("3");
+        event.setProductId(3L);
+        event.setQty(3L);
 
         InventoryApplication.applicationContext = applicationContext;
 
@@ -215,8 +215,8 @@ public class OrderPlacedTest {
 
             LOGGER.info("Response received: {}", received.getPayload());
 
-            assertEquals(outputEvent.getProductId(), "3");
-            assertEquals(outputEvent.getStockRemain(), "7");
+            assertEquals(outputEvent.getProductId(), Long.valueOf(3));
+            assertEquals(outputEvent.getStockRemain(), Long.valueOf(7));
         } catch (JsonProcessingException e) {
             // TODO Auto-generated catch block
             assertTrue("exception", false);
