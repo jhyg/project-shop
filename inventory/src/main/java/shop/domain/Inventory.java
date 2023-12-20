@@ -13,35 +13,39 @@ import shop.domain.InventoryUpdated;
 @Data
 public class Inventory {
 
-@Id
-@GeneratedValue(strategy = GenerationType.AUTO)
-private Long productId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long productId;
 
-private Long stockRemain;
+    private Long stockRemain;
 
-@PostPersist
-public void onPostPersist() {
-InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
-inventoryUpdated.publishAfterCommit();
-}
+    @PostPersist
+    public void onPostPersist() {
+        InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
+        inventoryUpdated.publishAfterCommit();
+    }
 
-public static InventoryRepository repository() {
-InventoryRepository inventoryRepository = InventoryApplication.applicationContext.getBean(
-InventoryRepository.class
-);
-return inventoryRepository;
-}
+    public static InventoryRepository repository() {
+        InventoryRepository inventoryRepository = InventoryApplication.applicationContext.getBean(
+            InventoryRepository.class
+        );
+        return inventoryRepository;
+    }
 
-public static void orderPlaced(OrderPlaced orderPlaced) {
+    public static void orderPlaced(OrderPlaced orderPlaced) {
+        repository()
+            .findById(orderPlaced.getProductId())
+            .ifPresent(inventory -> {
+                Long newStockRemain =
+                    inventory.getStockRemain() - orderPlaced.getQty();
+                if (newStockRemain < 0) newStockRemain = 0L;
+                inventory.setStockRemain(newStockRemain);
+                repository().save(inventory);
 
-repository().findById(orderPlaced.getProductId()).ifPresent(inventory->{
-Long newStockRemain = inventory.getStockRemain() - orderPlaced.getQty();
-if newStockRemain < 0) newStockRemain = 0L;
-inventory.setStockRemain(newStockRemain);
-repository().save(inventory);
-
-InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
-inventoryUpdated.publishAfterCommit();
-});
-}
+                InventoryUpdated inventoryUpdated = new InventoryUpdated(
+                    inventory
+                );
+                inventoryUpdated.publishAfterCommit();
+            });
+    }
 }
